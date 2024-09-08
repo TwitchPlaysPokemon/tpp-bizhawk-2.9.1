@@ -253,6 +253,9 @@ namespace BizHawk.Client.Common
 		public string SoundDevice { get; set; } = "";
 		public int SoundBufferSizeMs { get; set; } = 100;
 
+		// API
+		public int PublicApiHttpPort { get; set; } = 5337;
+
 		// Lua
 		public RecentFiles RecentLua { get; set; } = new RecentFiles(8);
 		public RecentFiles RecentLuaSession { get; set; } = new RecentFiles(8);

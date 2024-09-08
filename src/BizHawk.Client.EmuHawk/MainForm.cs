@@ -738,6 +738,9 @@ namespace BizHawk.Client.EmuHawk
 				// I would like to trigger a repaint here, but this isn't done yet
 			};
 
+			if (Config.PublicApiHttpPort > 0)
+				ApiManager.StartPublicApi(Config.PublicApiHttpPort);
+
 			if (!Config.SkipOutdatedOsCheck && OSTailoredCode.HostWindowsVersion is not null)
 			{
 				var (winVersion, win10PlusVersion) = OSTailoredCode.HostWindowsVersion.Value;

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.Common.Api.Public;
+using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -33,6 +35,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private static ApiContainer? _luaContainer;
 
+		private static PublicApi? _publicApi;
+
+		public static PublicApi StartPublicApi(int port)
+		{
+			_publicApi ??= new PublicApi();
+			_publicApi.StartHttp(port, Resources.Logo);
+			return _publicApi;
+		}
+
 		private static ApiContainer Register(
 			IEmulatorServiceProvider serviceProvider,
 			Action<string> logCallback,
@@ -57,6 +68,11 @@ namespace BizHawk.Client.EmuHawk
 				[typeof(IEmulator)] = emulator,
 				[typeof(IGameInfo)] = game,
 			};
+			if (_publicApi == null)
+				_publicApi = new PublicApi(serviceProvider);
+			else
+				_publicApi.Update(serviceProvider);
+			
 			return new ApiContainer(_apiTypes.Where(tuple => ServiceInjector.IsAvailable(serviceProvider, tuple.ImplType))
 				.ToDictionary(
 					tuple => tuple.InterfaceType,
