@@ -463,7 +463,7 @@ namespace BizHawk.Client.EmuHawk
 			NetworkingHelpers = (
 				_argParser.HTTPAddresses is var (httpGetURL, httpPostURL)
 					? new HttpCommunication(NetworkingTakeScreenshot, httpGetURL, httpPostURL)
-					: null,
+					: new HttpCommunication(NetworkingTakeScreenshot, "http://localhost/", "http://localhost/"),
 				new MemoryMappedFiles(NetworkingTakeScreenshot, _argParser.MMFFilename),
 				_argParser.SocketAddress is var (socketIP, socketPort)
 					? new SocketServer(NetworkingTakeScreenshot, _argParser.SocketProtocol, socketIP, socketPort)
