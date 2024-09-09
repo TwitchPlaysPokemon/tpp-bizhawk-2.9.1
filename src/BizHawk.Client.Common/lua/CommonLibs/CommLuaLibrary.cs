@@ -246,6 +246,33 @@ namespace BizHawk.Client.Common
 			return APIs.Comm.HTTP?.GetUrl;
 		}
 
+		private Dictionary<string,string> asyncDict = new Dictionary<string,string>();
+
+		[LuaMethod("httpGetAsync", "Makes a HTTP Get request to a given url and stores the result for later")]
+		public void HttpGetAsync(string url)
+		{
+			APIs.Comm.HTTP?.Get(url).ContinueWith(response => asyncDict[url] = response.Result);
+		}
+
+		[LuaMethod("httpGetAsyncResult", "Gets the result of the last HTTP Get Async request made to the given url")]
+		public string HttpGetAsyncResult(string url)
+		{
+			string value = null;
+			asyncDict.TryGetValue(url, out value);
+			asyncDict.Remove(url);
+			return value;
+		}
+
+		[LuaMethod("httpGetAsyncChainCall", "Makes a HTTP Get request to a given url and stores the result for later, then calls a second url and does the same.")]
+		public void HttpGetAsyncChainCall(string url1, string url2)
+		{
+			APIs.Comm.HTTP?.Get(url1).ContinueWith(response =>
+			{
+				asyncDict[url1] = response.Result;
+				APIs.Comm.HTTP?.Get(url2).ContinueWith(response => asyncDict[url2] = response.Result);
+			});
+		}
+
 		private void CheckHttp()
 		{
 			if (APIs.Comm.HTTP == null)
